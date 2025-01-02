@@ -1,21 +1,24 @@
-Feature: User Login
+Feature: Login functionality
 
-  Scenario: Valid login with valid credentials
-    Given I am on the login page
-    When I enter "validUser" and "validPassword"
-    Then I should be redirected to the homepage
+  Scenario: Successful login
+    Given I am on the ParaBank login page
+    When I enter username "john" and password "demo"
+    And I click the "Log In" button
+    Then I should see the homepage with the title "Welcome John Smith"
 
-  Scenario: Invalid login with invalid credentials
-    Given I am on the login page
-    When I enter "invalidUser" and "invalidPassword"
-    Then I should see an error message "Invalid username or password"
+  Scenario: Invalid login
+    Given I am on the ParaBank login page
+    When I enter username "invalidUser" and password "wrongPass"
+    And I click the "Log In" button
+    Then I should see an error message "The username and password could not be verified."
+
+  Scenario: Verify multiple user logins
+    Given I have the following users:
+      | username    | password    | expectedMessage          |
+      | validUser   | validPass   | "Welcome John Smith"     |
+      | invalidUser | invalidPass | "Invalid credentials!"   |
+      | adminUser   | adminPass   | "Welcome Admin"          |
+    When I attempt to login with each user's credentials
+    Then I should see the corresponding message for each user
 
 
-  Scenario: User logs in with multiple credentials
-    Given the following users and passwords
-      | username     | password   |
-      | validUser1   | password1  |
-      | validUser2   | password2  |
-      | invalidUser  | wrongPass  |
-    When I attempt to log in with the provided credentials
-    Then the login attempt should be successful or fail based on the credentials
